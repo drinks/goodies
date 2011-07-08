@@ -1,0 +1,54 @@
+#!/bin/bash
+# This hook is run after a new virtualenv is activated.
+echo "Created ${VIRTUAL_ENV}..."
+PROJ_NAME=$(echo $VIRTUAL_ENV|awk -F'/' '{print $NF}')
+# add branch to src folder
+mkdir $VIRTUAL_ENV/src
+
+# symlink reqs (will be broken until you symlink code)
+ln -s $VIRTUAL_ENV/src/$PROJ_NAME/../requirements.txt $VIRTUAL_ENV/requirements.txt
+
+# symlink statics (export DOCROOT=/your/apache/root)
+if [ "$DOCROOT" != "" ]
+then
+    mkdir -p $DOCROOT/django/static $DOCROOT/django/media
+    ln -s $VIRTUAL_ENV/src/$PROJ_FOLDER/static/$PROJ_NAME/ $DOCROOT/django/static/$PROJ_NAME
+    ln -s $VIRTUAL_ENV/src/$PROJ_FOLDER/media/$PROJ_NAME/ $DOCROOT/django/media/$PROJ_NAME
+else
+    echo "Static media links not created, please export `DOCROOT` in your bash profile"
+fi
+
+if [ "$CODEROOT" != "" ]
+then
+    list=(`find $CODEROOT -type d -mindepth 1 -maxdepth 1`)
+    echo "Where does your code live?"
+    
+    for (( i = 0 ; i < ${#list[@]} ; i++ ))
+    do
+        echo "[$i] ${list[$i]}"
+    done
+    
+    echo "[${#list[@]}] Other"
+    echo -n "Enter a number: "
+    read idx
+    
+    if [ "${list[$idx]}" != "" ]
+    then 
+        CODEPATH="${list[$idx]}"
+    else
+        echo -n "Enter your path: "
+        read CODEPATH
+    fi
+    ln -s $CODEPATH/$PROJ_NAME/$PROJ_NAME $VIRTUAL_ENV/src/$PROJ_NAME
+else
+    echo "Code not symlinked, please export `CODEROOT` in your bash profile"
+fi
+
+# build path
+add2virtualenv $VIRTUAL_ENV/src
+add2virtualenv $VIRTUAL_ENV/src/$PROJ_NAME
+
+cat $WORKON_HOME/virtualenv_postactivate.template > $VIRTUAL_ENV/bin/postactivate
+
+workon $PROJ_NAME
+echo "$PROJ_NAME has been set up."
