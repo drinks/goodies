@@ -1,24 +1,37 @@
 {
     "auto_complete": false,
     "color_scheme": "Packages/Color Scheme - Tomorrow Night/Tomorrow-Night.tmTheme",
+    "detect_indentation": true,
     "draw_white_space": "all",
-    "font_face": "Ubuntu Mono",
+    "folder_exclude_patterns":
+    [
+        ".svn",
+        ".git",
+        ".hg",
+        "CVS",
+        "_site",
+        "tmp"
+    ],
+    "font_face": "Source Code Pro",
     "font_options":
     [
         "subpixel_antialias"
     ],
-    "font_size": 16.0,
+    "font_size": 15.0,
     "highlight_line": true,
+    "ignored_packages":
+    [
+        "Vintage"
+    ],
+    "python_executable": "/usr/bin/env python",
     "rulers":
     [
         72,
-        79
+        79,
+        119
     ],
     "theme": "Soda Dark.sublime-theme",
     "translate_tabs_to_spaces": true,
     "trim_trailing_white_space_on_save": true,
-    "word_wrap": false,
-    "jshint_options": {
-        "laxcomma": true
-    }
+    "word_wrap": false
 }
